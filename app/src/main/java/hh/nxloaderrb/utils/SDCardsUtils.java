@@ -2,7 +2,6 @@ package hh.nxloaderrb.utils;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.text.TextUtils;
@@ -51,19 +50,7 @@ public class SDCardsUtils {
         initialize(context);
         if (!TextUtils.isEmpty(sdcard)) {
             File path = new File(sdcard);
-            if (Build.VERSION.SDK_INT >= 19) {
-                return Environment.getStorageState(path);
-            } else {
-                if (path.exists() && path.isDirectory() && path.canRead()) {
-                    if (path.canWrite()) {
-                        return Environment.MEDIA_MOUNTED;
-                    } else {
-                        return Environment.MEDIA_MOUNTED_READ_ONLY;
-                    }
-                } else {
-                    return Environment.MEDIA_REMOVED;
-                }
-            }
+            return Environment.getExternalStorageState(path);
         } else {
             return Environment.MEDIA_UNMOUNTED;
         }
@@ -76,10 +63,10 @@ public class SDCardsUtils {
                     String[] dirs = getExternalDirs(context);
                     if (dirs != null) {
                         int length = dirs.length;
-                        if(length > 0) {
+                        if (length > 0) {
                             sdcard0 = dirs[0];
                         }
-                        if(length > 1) {
+                        if (length > 1) {
                             sdcard1 = dirs[1];
                         }
                     }
@@ -89,7 +76,7 @@ public class SDCardsUtils {
         }
     }
 
-    private static String[] getExternalDirs(Context context) {
+    private static String[] getExtendedMemoryPath(Context context) {
         Context mContext = context.getApplicationContext();
         StorageManager mStorageManager = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
         try {
@@ -102,6 +89,33 @@ public class SDCardsUtils {
             for (int i = 0; i < length; i++) {
                 Object storageVolumeElement = Array.get(result, i);
                 paths[i] = (String) getPath.invoke(storageVolumeElement);
+            }
+            return paths;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static final String ENV_SECONDARY_STORAGE = "SECONDARY_STORAGE";
+
+    public static String[] getExternalDirs(Context context) {
+        Context mContext = context.getApplicationContext();
+        StorageManager mStorageManager = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+        try {
+            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
+            Object result = getVolumeList.invoke(mStorageManager);
+            assert result != null;
+            final int length = Array.getLength(result);
+            String[] paths = new String[length];
+            File sdCard = Environment.getExternalStorageDirectory();
+            paths[0] = sdCard.getAbsolutePath();
+            final String rawSecondaryStorage = System.getenv(ENV_SECONDARY_STORAGE);
+            for (int i = 0; i < length; i++) {
+                if (!TextUtils.isEmpty(rawSecondaryStorage)) {
+                    String[] externalCards = rawSecondaryStorage.split(":");
+                    paths[i] = externalCards[i];
+                }
             }
             return paths;
         } catch (Exception e) {

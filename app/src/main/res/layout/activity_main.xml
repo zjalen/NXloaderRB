@@ -27,28 +27,33 @@
             android:layout_marginTop="10dp"
             android:text="@string/injecting"/>
     </RelativeLayout>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/red">
+        android:background="@color/colorPrimary">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/slidemenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_menu_white_24dp"/>
-        <TextView
-            android:id="@+id/bartitle"
-            android:text="@string/app_name"
-            android:layout_toRightOf="@+id/slidemenu"
-            android:layout_marginLeft="20dp"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"/>
+
+            <ImageView
+                android:id="@+id/slidemenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/ic_menu_white_24dp" />
+
+            <TextView
+                android:id="@+id/bartitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@+id/slidemenu"
+                android:text="@string/app_name"
+                android:textColor="@color/white" />
 
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
@@ -58,7 +63,7 @@
         android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/switchstatus"
         android:layout_width="match_parent"
@@ -88,59 +93,74 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:text="@string/sxtip"/>
-    <RelativeLayout
-        android:id="@+id/fileselection"
-        android:layout_below="@+id/sxtip"
-        android:layout_marginTop="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-<TextView
-    android:id="@+id/filepath"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
-    android:layout_centerVertical="true"
-    android:text="@string/filepathsrc"
-    android:layout_toLeftOf="@+id/filebtn"/>
 
-<Button
-    android:id="@+id/filebtn"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/filebtn"
-    android:layout_marginRight="5dp"
-    android:layout_alignParentRight="true"
-    android:textAllCaps="false"
+        <RelativeLayout
+            android:id="@+id/fileselection"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/sxtip"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:background="#E8E8E8">
 
-    />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/filepath"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_toStartOf="@+id/filebtn"
+                android:text="@string/filepathsrc" />
 
-    <Button
-        android:id="@+id/injection"
-        android:layout_below="@+id/fileselection"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_height="wrap_content"
-        android:text="@string/injectiontxt"
-        android:layout_centerHorizontal="true"
-        android:textAllCaps="false"
-        />
+            <Button
+                android:id="@+id/filebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/colorPrimary"
+
+                android:text="@string/filebtn"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
         <androidx.appcompat.widget.SwitchCompat
-            android:layout_below="@id/injection"
             android:id="@+id/autoinjection"
-            android:text="@string/autoinject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:switchPadding="20dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_below="@id/fileselection"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="false"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/autoinject"
+            app:switchPadding="20dp" />
 
+
+        <Button
+            android:id="@+id/injection"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/autoinjection"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/injectiontxt"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/opengithub"
-            android:layout_below="@+id/autoinjection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_below="@+id/injection"
+            android:layout_marginTop="120dp"
             android:gravity="center"
             android:text="@string/mygithub"
             android:textColor="@color/colorPrimaryDark" />

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class AboutActivity : AppCompatActivity() {
     private var url1="https://github.com/DavidBuchanan314/NXLoader"
+    private var url2="https://github.com/huhao1987/NXloaderRB"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
@@ -20,6 +21,11 @@ class AboutActivity : AppCompatActivity() {
         orauthor.setText(getString(R.string.orauthor,url1))
         orauthor.setOnClickListener{
             openurl(url1)
+        }
+        orauthor2.setText(getString(R.string.orauthor,url2))
+
+        orauthor2.setOnClickListener{
+            openurl(url2)
         }
     }
     fun openurl(url:String)

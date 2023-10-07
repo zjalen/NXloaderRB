@@ -18,7 +18,7 @@
     <string name="injectiontxt">注入</string>
     <string name="orauthor">代码基于 %1$s</string>
     <string name="orauthor2">Heavily based on Fusée Gelée</string>
-    <string name="aboutdes">因为NXloader我用着有些问题，才有这个app的诞生，没啥了。</string>
+    <string name="aboutdes">优化了一下界面显示，基于以下开源代码</string>
     <string name="sdchoose">请选择存储设备</string>
     <string name="insd">内置存储</string>
     <string name="outsd">外置SD卡</string>

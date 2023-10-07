@@ -7,30 +7,32 @@
     android:layout_height="match_parent"
     tools:context=".AboutActivity"
     android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/red"
-        >
+        android:background="@color/colorPrimary">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/slidemenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/back"/>
-        <TextView
-            android:id="@+id/bartitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="dfef"
-            android:layout_toRightOf="@+id/slidemenu"
-            android:layout_marginLeft="20dp"
-            android:layout_centerInParent="true"
-            />
+
+            <ImageView
+                android:id="@+id/slidemenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/back" />
+
+            <TextView
+                android:id="@+id/bartitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/slidemenu"
+                android:text="dfef"
+                android:textColor="@color/white" />
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
     <LinearLayout
@@ -51,6 +53,14 @@
 
         <TextView
             android:id="@+id/orauthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/orauthor"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/orauthor2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

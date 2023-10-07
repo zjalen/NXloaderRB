@@ -36,18 +36,18 @@ import org.jetbrains.anko.uiThread
 class MainActivity : AppCompatActivity() {
     private val APX_VID = 0x0955
     private val APX_PID = 0x7321
-    private var ACTION_USB_PERMISSION ="hh.USB_PERMISSION"
-    private  var dialog:FilePickerDialog?=null
-    private var usbreceiver:BroadcastReceiver?=null
-    private var useSX=false
-    private var autointent:Intent?=null
+    private var ACTION_USB_PERMISSION = "hh.USB_PERMISSION"
+    private var dialog: FilePickerDialog? = null
+    private var usbreceiver: BroadcastReceiver? = null
+    private var useSX = false
+    private var autointent: Intent? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
+        var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
         val payload_name = sharepreferences.getString("binpath", null)
-        if(payload_name!=null)
-            filepath.text=payload_name
+        if (payload_name != null)
+            filepath.text = payload_name
         setSlideMenu()
         setItems()
         RegisterReceiver()
@@ -59,46 +59,42 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun RegisterReceiver()
-    {
-        if(usbreceiver==null) {
+    fun RegisterReceiver() {
+        if (usbreceiver == null) {
             usbreceiver = usbBroadcastreceiver()
             var filter = IntentFilter()
             filter.addAction(ACTION_USB_PERMISSION)
             filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
             filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
             registerReceiver(usbreceiver, filter)
-        }
-        else{
+        } else {
             unregisterReceiver(usbreceiver)
         }
     }
+
     override fun onDestroy() {
         if (usbreceiver != null) {
             unregisterReceiver(usbreceiver)
             super.onDestroy()
         }
     }
-    fun UsbPermissionCheck():Boolean
-    {
-        var connection=false
-        var manager =  getSystemService(Context.USB_SERVICE) as UsbManager
+
+    fun UsbPermissionCheck(): Boolean {
+        var connection = false
+        var manager = getSystemService(Context.USB_SERVICE) as UsbManager
 
         var deviceList = manager.getDeviceList();
-        var  deviceIterator = deviceList.values.iterator();
+        var deviceIterator = deviceList.values.iterator();
         var mPermissionIntent = PendingIntent.getBroadcast(this, 0, Intent(ACTION_USB_PERMISSION), 0)
-        for(i in manager.deviceList)
-        {
-            var device=i.value
-            if(manager.hasPermission(device))
-            {
-                connection=true
-                switchstatus.text=getString(R.string.deviceconnection)
+        for (i in manager.deviceList) {
+            var device = i.value
+            if (manager.hasPermission(device)) {
+                connection = true
+                switchstatus.text = getString(R.string.deviceconnection)
                 switchstatus.setTextColor(resources.getColor(R.color.light_green))
-            }
-            else {
-                connection=false
-                switchstatus.text=getString(R.string.devicenotconnection)
+            } else {
+                connection = false
+                switchstatus.text = getString(R.string.devicenotconnection)
                 switchstatus.setTextColor(resources.getColor(R.color.red))
                 manager.requestPermission(device, mPermissionIntent)
             }
@@ -107,20 +103,17 @@ class MainActivity : AppCompatActivity() {
         return connection
     }
 
-//    File permission check
+    //    File permission check
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode)
-        {
-            FilePickerDialog.EXTERNAL_READ_PERMISSION_GRANT->{
+        when (requestCode) {
+            FilePickerDialog.EXTERNAL_READ_PERMISSION_GRANT -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(dialog!=null)
-                    {
+                    if (dialog != null) {
                         //Show dialog if the read permission has been granted.
                         dialog!!.show();
                     }
-                }
-                else {
+                } else {
                     //Permission has not been granted. Notify the user.
                     dialog!!.dismiss()
                 }
@@ -128,14 +121,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    USB broadcasterreceiver
-    fun usbBroadcastreceiver():BroadcastReceiver{
-        var usbreceiver=object:BroadcastReceiver(){
+    //    USB broadcasterreceiver
+    fun usbBroadcastreceiver(): BroadcastReceiver {
+        var usbreceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                var action=intent!!.action
-                when(action)
-                {
-                    "hh.USB_PERMISSION"->{
+                var action = intent!!.action
+                when (action) {
+                    "hh.USB_PERMISSION" -> {
                         synchronized(this) {
                             val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
 
@@ -149,12 +141,11 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    UsbManager.ACTION_USB_DEVICE_ATTACHED->
-                        if(UsbPermissionCheck())injectauto()
+                    UsbManager.ACTION_USB_DEVICE_ATTACHED ->
+                        if (UsbPermissionCheck()) injectauto()
 
-                    UsbManager.ACTION_USB_DEVICE_DETACHED->
-                    {
-                        switchstatus.text=getString(R.string.devicenotconnection)
+                    UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+                        switchstatus.text = getString(R.string.devicenotconnection)
                         switchstatus.setTextColor(resources.getColor(R.color.red))
                     }
                 }
@@ -163,24 +154,22 @@ class MainActivity : AppCompatActivity() {
         return usbreceiver
     }
 
-//    set the slide menu
-    fun setSlideMenu()
-    {
-        var menuarray=resources.getStringArray(R.array.menu)
+    //    set the slide menu
+    fun setSlideMenu() {
+        val menuarray = resources.getStringArray(R.array.menu)
         val item1 = SecondaryDrawerItem().withIdentifier(1).withName(menuarray.get(1)).withSelectable(false)
 //        bartitle.text=menuarray.get(0)
-        bartitle.text=getString(R.string.app_name)+" "+packageManager.getPackageInfo(packageName,0).versionName
-        var leftmenu= DrawerBuilder()
+        bartitle.text = getString(R.string.app_name) + " " + packageManager.getPackageInfo(packageName, 0).versionName
+        var leftmenu = DrawerBuilder()
                 .withActivity(this@MainActivity)
                 .addDrawerItems(
                         item1
                 )
-                .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener{
+                .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener {
                     override fun onItemClick(view: View?, position: Int, drawerItem: IDrawerItem<*, *>?): Boolean {
-                        when(drawerItem!!.identifier.toInt())
-                        {
-                            1->{
-                                startActivity(Intent(this@MainActivity,AboutActivity::class.java))
+                        when (drawerItem!!.identifier.toInt()) {
+                            1 -> {
+                                startActivity(Intent(this@MainActivity, AboutActivity::class.java))
                             }
 
                         }
@@ -195,27 +184,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setFile()
-    {
+    fun setFile() {
 
         filebtn.setOnClickListener {
-            if(SDCardsUtils.getSDCard1(this)!=null){
-                var sddialog=AlertDialog.Builder(this)
+            if (SDCardsUtils.getSDCard1(this) != null) {
+                val sddialog = AlertDialog.Builder(this)
                 sddialog.setTitle(R.string.sdchoose)
-                val items = arrayOf(getString(R.string.insd),getString(R.string.outsd))
+                val items = arrayOf(getString(R.string.insd), getString(R.string.outsd))
 
-                sddialog.setItems(items,object:DialogInterface.OnClickListener{
+                sddialog.setItems(items, object : DialogInterface.OnClickListener {
                     override fun onClick(dialog1: DialogInterface?, which: Int) {
-                        when(which)
-                        {
-                            0-> {
-                                var folder = SDCardsUtils.getSDCard0(this@MainActivity)
+                        when (which) {
+                            0 -> {
+                                val folder = SDCardsUtils.getSDCard0(this@MainActivity)
                                 filedialog(folder)
                                 dialog!!.show()
                             }
 
-                            1->            {
-                                var folder=SDCardsUtils.getSDCard1(this@MainActivity)
+                            1 -> {
+                                val folder = SDCardsUtils.getSDCard1(this@MainActivity)
                                 filedialog(folder)
                                 dialog!!.show()
 
@@ -224,48 +211,46 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }).show()
-            }
-            else {
-                var folder = SDCardsUtils.getSDCard0(this@MainActivity)
+            } else {
+                val folder = SDCardsUtils.getSDCard0(this@MainActivity)
                 filedialog(folder)
                 dialog!!.show()
             }
         }
     }
 
-    fun filedialog(folder:String){
+    fun filedialog(folder: String) {
         var properties = DialogProperties()
         properties.selection_mode = DialogConfigs.SINGLE_MODE
         properties.selection_type = DialogConfigs.FILE_SELECT
         properties.root = File(folder)
         properties.error_dir = File(DialogConfigs.DEFAULT_DIR)
         properties.offset = File(DialogConfigs.DEFAULT_DIR)
-        var exten=ArrayList<String>()
+        var exten = ArrayList<String>()
         exten.add("bin")
-        properties.extensions=exten.toTypedArray()
+        properties.extensions = exten.toTypedArray()
         dialog = FilePickerDialog(this@MainActivity, properties)
         dialog!!.setTitle(getString(R.string.fileselmsg))
         dialog!!.setPositiveBtnName(getString(R.string.filesepo))
         dialog!!.setNegativeBtnName(getString(R.string.filesena))
 
-        dialog!!.setDialogSelectionListener (object:DialogSelectionListener{
+        dialog!!.setDialogSelectionListener(object : DialogSelectionListener {
             override fun onSelectedFilePaths(files: Array<out String>?) {
-                filepath.text=files!!.get(0)
-                var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
-                var shareditor=sharepreferences.edit().putString("binpath",files!!.get(0))
+                filepath.text = files!!.get(0)
+                var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
+                var shareditor = sharepreferences.edit().putString("binpath", files!!.get(0))
                 shareditor.apply()
             }
         })
     }
 
-//    Init the elements and functions
-    fun setItems()
-    {
+    //    Init the elements and functions
+    fun setItems() {
         setFile()
-        var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
+        var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
         useSX = sharepreferences.getBoolean("useSX", false)
         opengithub.setOnClickListener {
-            var uri = Uri.parse("https://github.com/huhao1987/NXloaderRB")
+            var uri = Uri.parse("https://github.com/zjalen/NXloaderRB.git")
             val intent = Intent()
             intent.action = "android.intent.action.VIEW"
             intent.data = uri
@@ -273,28 +258,26 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        setsxosswitch.isChecked=useSX
-        if(useSX){
-            filebtn.isClickable=false
-            filepath.text=getString(R.string.sxossetdes)
+        setsxosswitch.isChecked = useSX
+        if (useSX) {
+            filebtn.isClickable = false
+            filepath.text = getString(R.string.sxossetdes)
             fileselection.setBackgroundColor(resources.getColor(R.color.gray))
         }
-        setsxosswitch.setOnCheckedChangeListener(object:CompoundButton.OnCheckedChangeListener{
+        setsxosswitch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
-                var shareditor:SharedPreferences.Editor?=null
-                if(isChecked)
-                {
-                    shareditor=sharepreferences.edit().putBoolean("useSX",true)
-                    filebtn.isClickable=false
-                    filepath.text=getString(R.string.sxossetdes)
+                val sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
+                var shareditor: SharedPreferences.Editor? = null
+                if (isChecked) {
+                    shareditor = sharepreferences.edit().putBoolean("useSX", true)
+                    filebtn.isClickable = false
+                    filepath.text = getString(R.string.sxossetdes)
                     fileselection.setBackgroundColor(resources.getColor(R.color.gray))
-                }
-                else{
-                    shareditor=sharepreferences.edit().putBoolean("useSX",false)
-                    filebtn.isClickable=true
-                    var payload_name = sharepreferences.getString("binpath", null)
-                    filepath.text=payload_name
+                } else {
+                    shareditor = sharepreferences.edit().putBoolean("useSX", false)
+                    filebtn.isClickable = true
+                    val payload_name = sharepreferences.getString("binpath", null)
+                    filepath.text = payload_name
                     fileselection.setBackgroundColor(resources.getColor(R.color.white))
 
                 }
@@ -303,31 +286,28 @@ class MainActivity : AppCompatActivity() {
         })
         injectauto()
         injection.setOnClickListener {
-            if(UsbPermissionCheck()) {
+            if (UsbPermissionCheck()) {
                 runOnUiThread {
 
                     injectionloading.visibility = View.VISIBLE
                     injectionloading.bringToFront()
                     injectBin()
                 }
-            }
-            else
-                    Toastmessage(getString(R.string.devicenotconnection))
+            } else
+                Toastmessage(getString(R.string.devicenotconnection))
 
         }
 
 
-        autoinjection.setOnCheckedChangeListener(object:CompoundButton.OnCheckedChangeListener{
+        autoinjection.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                if(isChecked)
-                {
-                   sharepreferences.edit().putBoolean("autoinject",true).apply()
+                if (isChecked) {
+                    sharepreferences.edit().putBoolean("autoinject", true).apply()
 
 //                    autointent=Intent(this@MainActivity,AutoInjectService::class.java)
 //                    startService(autointent)
-                }
-                else {
-                   sharepreferences.edit().putBoolean("autoinject",false).apply()
+                } else {
+                    sharepreferences.edit().putBoolean("autoinject", false).apply()
 
 //                    if(autointent!=null)
 //                        stopService(autointent)
@@ -337,36 +317,32 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun injectauto()
-    {
-        var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
+    fun injectauto() {
+        var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
 
-        var autoinject=sharepreferences.getBoolean("autoinject",false)
-        if(autoinject)
-        {
-            autoinjection.isChecked=true
+        var autoinject = sharepreferences.getBoolean("autoinject", false)
+        if (autoinject) {
+            autoinjection.isChecked = true
             var binpath = sharepreferences.getString("binpath", null)
-            if(binpath!=null)
+            if (binpath != null)
                 injectBin()
             else
                 Toastmessage(getString(R.string.filepathsrc))
-        }
-        else autoinjection.isChecked=false
+        } else autoinjection.isChecked = false
     }
-    fun injectBin()
-    {
-        var usbManager=getSystemService(Context.USB_SERVICE) as UsbManager
-        var devicelist=usbManager.deviceList
 
-        for(a in devicelist)
-        {
-            if(a.value.productId==APX_PID&&a.value.vendorId==APX_VID) {
+    fun injectBin() {
+        var usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
+        var devicelist = usbManager.deviceList
+
+        for (a in devicelist) {
+            if (a.value.productId == APX_PID && a.value.vendorId == APX_VID) {
 //                    Thread(Runnable {
-                var u=PrimaryLoader()
-                if(u!=null) {
-                    var sharepreferences=getSharedPreferences("Config", Context.MODE_PRIVATE)
+                var u = PrimaryLoader()
+                if (u != null) {
+                    var sharepreferences = getSharedPreferences("Config", Context.MODE_PRIVATE)
                     var useSX = sharepreferences.getBoolean("useSX", false)
-                    u.handleDevice(this, a.value, object:PrimaryLoader.Injectionprogress {
+                    u.handleDevice(this, a.value, object : PrimaryLoader.Injectionprogress {
                         override fun onFailed(errormsg: String) {
                             doAsync {
                                 injectionloading.visibility = View.GONE
@@ -381,7 +357,7 @@ class MainActivity : AppCompatActivity() {
                                 Toastmessage(getString(R.string.injectsuccess))
                             }
                         }
-                    },useSX
+                    }, useSX
                     )
                 }
 //                    }).start()
@@ -389,8 +365,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    fun Toastmessage(msg:String)
-    {
+
+    fun Toastmessage(msg: String) {
         object : Thread() {
             override fun run() {
                 Looper.prepare()
